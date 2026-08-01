@@ -43,7 +43,7 @@ function Checkout() {
   const navigate = useNavigate();
   const { lines, bags } = useCart();
   const totals = useTotals();
-  const [date, setDate] = useState(dates[0].label);
+  const [date, setDate] = useState(dates[0]!.label);
   const [payment, setPayment] = useState("credit");
 
   return (
