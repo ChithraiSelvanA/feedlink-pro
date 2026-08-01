@@ -4,7 +4,7 @@ import { inr, type Product, type Category, type Order, byIds } from "@/lib/catal
 import { useCart } from "@/lib/cart";
 import { AddButton, QuantityStepper, StatusBadge } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Package } from "lucide-react";
+import { Beef, Bird, ChevronRight, FlaskConical, Gem, Package, Rabbit } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ProductCard({ product, wide }: { product: Product; wide?: boolean }) {
@@ -80,12 +80,12 @@ export function ProductCard({ product, wide }: { product: Product; wide?: boolea
   );
 }
 
-const catStyle: Record<Category["icon"], { emoji: string; bg: string }> = {
-  cattle: { emoji: "🐄", bg: "bg-primary-soft" },
-  goat: { emoji: "🐐", bg: "bg-warning-soft" },
-  poultry: { emoji: "🐓", bg: "bg-info-soft" },
-  supplement: { emoji: "🧪", bg: "bg-success-soft" },
-  mineral: { emoji: "🧱", bg: "bg-muted" },
+const catStyle: Record<Category["icon"], { Icon: typeof Beef; bg: string; fg: string }> = {
+  cattle: { Icon: Beef, bg: "bg-primary-soft", fg: "text-primary" },
+  goat: { Icon: Rabbit, bg: "bg-warning-soft", fg: "text-warning-foreground" },
+  poultry: { Icon: Bird, bg: "bg-info-soft", fg: "text-info" },
+  supplement: { Icon: FlaskConical, bg: "bg-success-soft", fg: "text-success" },
+  mineral: { Icon: Gem, bg: "bg-muted", fg: "text-foreground" },
 };
 
 export function CategoryCard({ category, wide }: { category: Category; wide?: boolean }) {
@@ -99,8 +99,8 @@ export function CategoryCard({ category, wide }: { category: Category; wide?: bo
         wide && "w-24 shrink-0",
       )}
     >
-      <span className={cn("grid size-14 place-items-center rounded-2xl text-2xl", s.bg)}>
-        {s.emoji}
+      <span className={cn("grid size-14 place-items-center rounded-2xl", s.bg, s.fg)}>
+        <s.Icon className="size-6" />
       </span>
       <span className="line-clamp-2 text-center text-xs font-bold leading-tight text-foreground">
         {category.name}
