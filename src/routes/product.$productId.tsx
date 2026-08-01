@@ -32,7 +32,7 @@ export const Route = createFileRoute("/product/$productId")({
       ],
     };
   },
-  component: ProductDetail;
+  component: ProductDetail,
 });
 
 function ProductDetail() {
