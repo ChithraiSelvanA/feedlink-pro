@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { MapPin, Wallet } from "lucide-react";
-import { getOrder, getProduct, inr } from "@/lib/catalog";
+import { getOrder, getProduct, inr, type Order } from "@/lib/catalog";
 import { dealer } from "@/lib/catalog";
 import { AppBar, SectionHeader } from "@/components/app/app-bar";
 import { StatusBadge } from "@/components/app/primitives";
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/orders/$orderId")({
 });
 
 function OrderDetails() {
-  const { order } = Route.useLoaderData();
+  const { order } = Route.useLoaderData() as { order: Order };
 
   return (
     <div className="pb-12">

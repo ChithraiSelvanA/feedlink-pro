@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { PackageSearch } from "lucide-react";
-import { categories, products } from "@/lib/catalog";
+import { categories, products, type Category } from "@/lib/catalog";
 import { AppBar } from "@/components/app/app-bar";
 import { BottomNav } from "@/components/app/bottom-nav";
 import { ProductCard, StickyBar } from "@/components/app/cards";
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/category/$slug")({
 const sorts = ["Popular", "Price low", "Price high", "In stock"] as const;
 
 function CategoryPage() {
-  const { category } = Route.useLoaderData();
+  const { category } = Route.useLoaderData() as { category: Category };
   const { bags, subtotal } = useCart();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<(typeof sorts)[number]>("Popular");

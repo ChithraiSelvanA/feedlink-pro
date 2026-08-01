@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Heart, ShieldCheck, Truck } from "lucide-react";
-import { getProduct, inr, products } from "@/lib/catalog";
+import { getProduct, inr, products, type Product } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { AppBar, SectionHeader } from "@/components/app/app-bar";
 import { ProductCard, StickyBar } from "@/components/app/cards";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/product/$productId")({
 });
 
 function ProductDetail() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: Product };
   const { qtyOf, setQty } = useCart();
   const [qty, setLocal] = useState(Math.max(qtyOf(product.id), product.moq));
   const [active, setActive] = useState(0);
