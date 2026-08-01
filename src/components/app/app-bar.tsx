@@ -53,15 +53,11 @@ export function AppBar({
 export function SectionHeader({
   title,
   caption,
-  to,
-  params,
-  actionLabel = "See all",
+  action,
 }: {
   title: string;
   caption?: string;
-  to?: string;
-  params?: Record<string, string>;
-  actionLabel?: string;
+  action?: ReactNode;
 }) {
   return (
     <div className="mb-3 flex items-end justify-between gap-3">
@@ -69,15 +65,8 @@ export function SectionHeader({
         <h2 className="truncate text-base font-bold text-foreground">{title}</h2>
         {caption ? <p className="truncate text-xs text-muted-foreground">{caption}</p> : null}
       </div>
-      {to ? (
-        <Link
-          to={to}
-          params={params}
-          className="shrink-0 text-xs font-semibold text-primary hover:underline"
-        >
-          {actionLabel}
-        </Link>
-      ) : null}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </div>
   );
 }
+
