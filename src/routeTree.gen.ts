@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -36,6 +37,11 @@ const LoginRoute = LoginRouteImport.update({
 const OrderSuccessRoute = OrderSuccessRouteImport.update({
   id: '/order-success',
   path: '/order-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/login'
     | '/order-success'
+    | '/privacy-policy'
     | '/profile'
     | '/settings'
     | '/category/$slug'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/login'
     | '/order-success'
+    | '/privacy-policy'
     | '/profile'
     | '/settings'
     | '/category/$slug'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/login'
     | '/order-success'
+    | '/privacy-policy'
     | '/profile'
     | '/settings'
     | '/category/$slug'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   LoginRoute: typeof LoginRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/order-success'
       fullPath: '/order-success'
       preLoaderRoute: typeof OrderSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   LoginRoute: LoginRoute,
   OrderSuccessRoute: OrderSuccessRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
   CategorySlugRoute: CategorySlugRoute,
