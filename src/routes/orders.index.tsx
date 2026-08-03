@@ -1,84 +1,66 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ReceiptText } from "lucide-react";
-import { inr, orders, type OrderStatus } from "@/lib/catalog";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { inr, orders } from "@/lib/catalog";
+import { useCart } from "@/lib/cart";
 import { AppBar } from "@/components/app/app-bar";
 import { BottomNav } from "@/components/app/bottom-nav";
-import { OrderCard } from "@/components/app/cards";
-import { EmptyState } from "@/components/app/primitives";
+import { StatusText } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/orders/")({
   head: () => ({
     meta: [
-      { title: "Order History & Dispatch Status — FeedLink" },
+      { title: "Order History & Reorder — FeedLink Dealer App" },
       {
         name: "description",
         content:
-          "Track every feed order: dispatch status, bag counts, invoice value and delivery dates in one place.",
+          "See every feed order with date, status and amount, and reorder the same bags in one tap.",
       },
-      { property: "og:title", content: "Order History & Dispatch Status" },
+      { property: "og:title", content: "Order History — FeedLink" },
       {
         property: "og:description",
-        content: "Track dispatch status, bag counts and delivery dates for every feed order.",
+        content: "Every feed order with date, status and amount, plus one-tap reorder.",
       },
     ],
   }),
   component: Orders,
 });
 
-const filters: { key: OrderStatus | "all"; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "processing", label: "Processing" },
-  { key: "in-transit", label: "In transit" },
-  { key: "delivered", label: "Delivered" },
-  { key: "cancelled", label: "Cancelled" },
-];
-
 function Orders() {
-  const [filter, setFilter] = useState<OrderStatus | "all">("all");
-  const list = filter === "all" ? orders : orders.filter((o) => o.status === filter);
-  const spend = orders.filter((o) => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
+  const navigate = useNavigate();
+  const { add } = useCart();
 
   return (
-    <div className="pb-28">
-      <AppBar title="Orders" subtitle={`${orders.length} orders · ${inr(spend)} lifetime`} back={false} />
+    <div className="animate-page pb-28">
+      <AppBar title="Orders" back={false} cart />
 
-      <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 pt-4">
-        {filters.map((f) => (
-          <button
-            key={f.key}
-            type="button"
-            onClick={() => setFilter(f.key)}
-            className={cn(
-              "press shrink-0 rounded-full border px-3.5 py-2 text-xs font-semibold",
-              filter === f.key
-                ? "border-primary bg-primary-soft text-primary"
-                : "border-border bg-card text-muted-foreground",
-            )}
-          >
-            {f.label}
-          </button>
+      <ul className="divide-y divide-border px-4">
+        {orders.map((o) => (
+          <li key={o.id} className="py-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-base font-semibold">{o.id}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{o.date}</p>
+                <div className="mt-1.5">
+                  <StatusText status={o.status} />
+                </div>
+              </div>
+              <p className="text-base font-semibold tabular-nums">{inr(o.total)}</p>
+            </div>
+            <Button
+              variant="outline"
+              className="mt-3 w-full"
+              onClick={() => {
+                o.lines.forEach((l) => add(l.productId, l.kg, l.qty));
+                toast.success("Items added to cart");
+                navigate({ to: "/cart" });
+              }}
+            >
+              Reorder
+            </Button>
+          </li>
         ))}
-      </div>
-
-      <section className="space-y-3 px-4 pt-4">
-        {list.length ? (
-          list.map((o) => <OrderCard key={o.id} order={o} />)
-        ) : (
-          <EmptyState
-            icon={ReceiptText}
-            title="No orders here"
-            description="You have no orders with this status yet. Place a new order from the catalog."
-            action={
-              <Button asChild>
-                <Link to="/categories">Start ordering</Link>
-              </Button>
-            }
-          />
-        )}
-      </section>
+      </ul>
 
       <BottomNav />
     </div>

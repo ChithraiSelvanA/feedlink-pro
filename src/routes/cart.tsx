@@ -1,151 +1,160 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShoppingBag, MapPin } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { MapPin, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { dealer, getProduct, inr } from "@/lib/catalog";
-import { AppBar, SectionHeader } from "@/components/app/app-bar";
-import { ProductRow, StickyBar } from "@/components/app/cards";
-import { EmptyState } from "@/components/app/primitives";
-import { BottomNav } from "@/components/app/bottom-nav";
+import { useAddresses } from "@/lib/addresses";
+import { getProduct, inr } from "@/lib/catalog";
+import { AppBar } from "@/components/app/app-bar";
+import { CartLineRow } from "@/components/app/cards";
+import { EmptyState, Row } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
-      { title: "Your Order Cart — FeedLink" },
+      { title: "Cart & Place Order — FeedLink Dealer App" },
       {
         name: "description",
         content:
-          "Review bag quantities, delivery details and net payable before placing your feed order with FeedLink.",
+          "Review bag sizes, quantities and delivery address, then place your feed order in one tap.",
       },
-      { property: "og:title", content: "Your Order Cart — FeedLink" },
+      { property: "og:title", content: "Cart & Place Order — FeedLink" },
       {
         property: "og:description",
-        content: "Review quantities, delivery details and net payable before placing your order.",
+        content: "Review your feed order and place it in one tap.",
       },
     ],
   }),
   component: Cart,
 });
 
-export function PriceSummary({
-  subtotal,
-  savings,
-  freight,
-  gst,
-  total,
-}: {
-  subtotal: number;
-  savings: number;
-  freight: number;
-  gst: number;
-  total: number;
-}) {
-  const rows = [
-    { label: "Item subtotal", value: inr(subtotal) },
-    { label: "Scheme discount", value: `− ${inr(savings)}`, accent: true },
-    { label: "Freight", value: freight === 0 ? "Free" : inr(freight) },
-    { label: "GST (est.)", value: inr(gst) },
-  ];
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
-      <div className="space-y-2.5">
-        {rows.map((r) => (
-          <div key={r.label} className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{r.label}</span>
-            <span
-              className={
-                r.accent
-                  ? "font-semibold tabular-nums text-primary"
-                  : "font-semibold tabular-nums text-foreground"
-              }
-            >
-              {r.value}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-        <span className="text-sm font-bold text-foreground">Grand total</span>
-        <span className="text-lg font-extrabold tabular-nums text-foreground">{inr(total)}</span>
-      </div>
-    </div>
-  );
-}
-
-export function useTotals() {
-  const { subtotal, savings } = useCart();
-  const freight = subtotal > 10000 || subtotal === 0 ? 0 : 450;
-  const gst = Math.round(subtotal * 0.05);
-  return { subtotal, savings, freight, gst, total: subtotal + freight + gst };
-}
-
 function Cart() {
-  const { lines, bags, notes, setNotes } = useCart();
-  const totals = useTotals();
+  const navigate = useNavigate();
+  const { lines, setQty, remove, subtotal, bags } = useCart();
+  const { addresses, selected, select } = useAddresses();
+  const [picker, setPicker] = useState(false);
 
-  if (!lines.length)
+  const delivery = subtotal > 0 && subtotal < 5000 ? 250 : 0;
+  const total = subtotal + delivery;
+
+  if (!lines.length) {
     return (
-      <div className="pb-28">
-        <AppBar title="Cart" back={false} />
+      <div className="animate-page">
+        <AppBar title="Cart" />
         <EmptyState
-          icon={ShoppingBag}
+          icon={ShoppingCart}
           title="Your cart is empty"
-          description="Add feed bags from the catalog and they will show up here for a one-tap order."
+          description="Pick a category to start your order."
           action={
             <Button asChild size="lg">
-              <Link to="/categories">Browse catalog</Link>
+              <Link to="/">Browse categories</Link>
             </Button>
           }
         />
-        <BottomNav />
       </div>
     );
+  }
 
   return (
-    <div className="pb-32">
-      <AppBar title="Cart" subtitle={`${lines.length} items · ${bags} bags`} back={false} />
+    <div className="animate-page pb-36">
+      <AppBar title="Cart" />
 
-      <section className="space-y-3 px-4 pt-4">
+      <section className="border-b border-border px-4 py-4">
+        <div className="flex items-start gap-3">
+          <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium text-muted-foreground">Delivery address</p>
+            <p className="mt-1 text-sm font-semibold">{selected?.label}</p>
+            <p className="text-sm text-muted-foreground">
+              {selected?.line}, {selected?.city} — {selected?.pincode}
+            </p>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          size="default"
+          className="mt-3 w-full"
+          onClick={() => setPicker(true)}
+        >
+          Change Address
+        </Button>
+      </section>
+
+      <section className="divide-y divide-border px-4">
         {lines.map((l) => {
           const product = getProduct(l.productId);
           if (!product) return null;
-          return <ProductRow key={l.productId} product={product} qty={l.qty} />;
+          return (
+            <CartLineRow
+              key={`${l.productId}-${l.kg}`}
+              product={product}
+              kg={l.kg}
+              qty={l.qty}
+              onQty={(n) => setQty(l.productId, l.kg, n)}
+              onRemove={() => remove(l.productId, l.kg)}
+            />
+          );
         })}
       </section>
 
-      <section className="px-4 pt-6">
-        <SectionHeader title="Delivery" />
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-card">
-          <div className="flex gap-3">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-            <div className="min-w-0">
-              <p className="text-sm font-bold text-foreground">{dealer.name}</p>
-              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                {dealer.address}
-              </p>
-              <p className="mt-1.5 text-xs font-semibold text-primary">Dispatch in 2–3 days</p>
-            </div>
-          </div>
+      <section className="mt-2 border-t border-border px-4 py-3">
+        <Row label={`Subtotal (${bags} bags)`} value={inr(subtotal)} />
+        <Row label="Delivery" value={delivery === 0 ? "Free" : inr(delivery)} />
+        <div className="border-t border-border">
+          <Row label="Total" value={inr(total)} strong />
         </div>
       </section>
 
-      <section className="px-4 pt-6">
-        <SectionHeader title="Order notes" caption="Optional instructions for the depot" />
-        <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="e.g. Deliver before 11 AM, unload at rear gate"
-          className="min-h-24 rounded-2xl border-border bg-card shadow-card"
-        />
-      </section>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="mx-auto max-w-md">
+          <Button
+            size="xl"
+            className="w-full"
+            onClick={() => navigate({ to: "/order-success", search: { total } })}
+          >
+            Place Order · {inr(total)}
+          </Button>
+        </div>
+      </div>
 
-      <section className="px-4 pt-6">
-        <SectionHeader title="Price summary" />
-        <PriceSummary {...totals} />
-      </section>
-
-      <StickyBar label="Grand total" value={inr(totals.total)} cta="Place Order" to="/checkout" />
+      <Dialog open={picker} onOpenChange={setPicker}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Select delivery address</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            {addresses.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                onClick={() => {
+                  select(a.id);
+                  setPicker(false);
+                }}
+                className={cn(
+                  "press w-full rounded-xl border p-3 text-left",
+                  selected?.id === a.id ? "border-primary bg-primary-soft" : "border-border",
+                )}
+              >
+                <p className="text-sm font-semibold">{a.label}</p>
+                <p className="text-sm text-muted-foreground">
+                  {a.line}, {a.city} — {a.pincode}
+                </p>
+              </button>
+            ))}
+          </div>
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/profile">Manage addresses</Link>
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
