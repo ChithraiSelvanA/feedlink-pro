@@ -14,6 +14,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 
@@ -42,6 +43,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders/': typeof OrdersIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders': typeof OrdersIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/order-success': typeof OrderSuccessRoute
   '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders/': typeof OrdersIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/order-success'
     | '/profile'
+    | '/settings'
     | '/category/$slug'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/order-success'
     | '/profile'
+    | '/settings'
     | '/category/$slug'
     | '/orders'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/order-success'
     | '/profile'
+    | '/settings'
     | '/category/$slug'
     | '/orders/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
   ProfileRoute: typeof ProfileRoute
+  SettingsRoute: typeof SettingsRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OrderSuccessRoute: OrderSuccessRoute,
   ProfileRoute: ProfileRoute,
+  SettingsRoute: SettingsRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrdersIndexRoute: OrdersIndexRoute,
 }
