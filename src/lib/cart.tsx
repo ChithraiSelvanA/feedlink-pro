@@ -1,28 +1,24 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { getProduct } from "./catalog";
+import { getProduct, priceOf } from "./catalog";
 
-type CartLine = { productId: string; qty: number };
+export type CartLine = { productId: string; kg: number; qty: number };
 
 type CartValue = {
   lines: CartLine[];
-  qtyOf: (id: string) => number;
-  setQty: (id: string, qty: number) => void;
-  add: (id: string, qty?: number) => void;
+  qtyOf: (id: string, kg: number) => number;
+  setQty: (id: string, kg: number, qty: number) => void;
+  add: (id: string, kg: number, qty: number) => void;
+  remove: (id: string, kg: number) => void;
   clear: () => void;
-  count: number;
   bags: number;
   subtotal: number;
-  savings: number;
-  notes: string;
-  setNotes: (v: string) => void;
 };
 
 const CartContext = createContext<CartValue | null>(null);
-const KEY = "feedlink.cart.v1";
+const KEY = "feedlink.cart.v2";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
-  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     try {
@@ -42,37 +38,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [lines]);
 
   const value = useMemo<CartValue>(() => {
-    const qtyOf = (id: string) => lines.find((l) => l.productId === id)?.qty ?? 0;
+    const same = (l: CartLine, id: string, kg: number) => l.productId === id && l.kg === kg;
 
-    const setQty = (id: string, qty: number) =>
+    const setQty = (id: string, kg: number, qty: number) =>
       setLines((prev) => {
-        if (qty <= 0) return prev.filter((l) => l.productId !== id);
-        if (prev.some((l) => l.productId === id))
-          return prev.map((l) => (l.productId === id ? { ...l, qty } : l));
-        return [...prev, { productId: id, qty }];
+        if (qty <= 0) return prev.filter((l) => !same(l, id, kg));
+        if (prev.some((l) => same(l, id, kg)))
+          return prev.map((l) => (same(l, id, kg) ? { ...l, qty } : l));
+        return [...prev, { productId: id, kg, qty }];
       });
-
-    const priced = lines.map((l) => ({ line: l, product: getProduct(l.productId) }));
-    const subtotal = priced.reduce((s, p) => s + (p.product?.price ?? 0) * p.line.qty, 0);
-    const savings = priced.reduce(
-      (s, p) => s + ((p.product?.mrp ?? 0) - (p.product?.price ?? 0)) * p.line.qty,
-      0,
-    );
 
     return {
       lines,
-      qtyOf,
+      qtyOf: (id, kg) => lines.find((l) => same(l, id, kg))?.qty ?? 0,
       setQty,
-      add: (id, qty) => setQty(id, qtyOf(id) + (qty ?? getProduct(id)?.moq ?? 1)),
+      add: (id, kg, qty) =>
+        setQty(id, kg, (lines.find((l) => same(l, id, kg))?.qty ?? 0) + qty),
+      remove: (id, kg) => setQty(id, kg, 0),
       clear: () => setLines([]),
-      count: lines.length,
       bags: lines.reduce((s, l) => s + l.qty, 0),
-      subtotal,
-      savings,
-      notes,
-      setNotes,
+      subtotal: lines.reduce(
+        (s, l) => s + (getProduct(l.productId) ? priceOf(l.productId, l.kg) : 0) * l.qty,
+        0,
+      ),
     };
-  }, [lines, notes]);
+  }, [lines]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

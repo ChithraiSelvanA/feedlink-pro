@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
+import { AddressProvider } from "@/lib/addresses";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -125,11 +126,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <div className="mx-auto min-h-screen w-full max-w-md bg-background">
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </div>
-        <Toaster position="top-center" />
+        <AddressProvider>
+          <div className="mx-auto min-h-screen w-full max-w-md bg-background">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </div>
+          <Toaster position="top-center" />
+        </AddressProvider>
       </CartProvider>
     </QueryClientProvider>
   );
