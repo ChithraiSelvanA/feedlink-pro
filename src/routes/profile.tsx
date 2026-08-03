@@ -1,165 +1,164 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Building2,
-  ChevronRight,
-  FileText,
-  Headphones,
-  LogOut,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
-import { dealer } from "@/lib/catalog";
-import { AppBar, SectionHeader } from "@/components/app/app-bar";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
+import { dealer, type Address } from "@/lib/catalog";
+import { useAddresses } from "@/lib/addresses";
+import { AppBar } from "@/components/app/app-bar";
 import { BottomNav } from "@/components/app/bottom-nav";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Dealer Profile & Business Details — FeedLink" },
+      { title: "Dealer Profile & Addresses — FeedLink" },
       {
         name: "description",
         content:
-          "Manage your dealer contact details, delivery address, GST information and credit terms on FeedLink.",
+          "Your business details and delivery addresses. Add, edit or set a default address for faster ordering.",
       },
-      { property: "og:title", content: "Dealer Profile & Business Details" },
+      { property: "og:title", content: "Dealer Profile — FeedLink" },
       {
         property: "og:description",
-        content: "Manage contact details, delivery address, GST information and credit terms.",
+        content: "Business details and delivery addresses for faster feed ordering.",
       },
     ],
   }),
   component: Profile,
 });
 
-function Row({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Phone;
-  label: string;
-  value: string;
-}) {
+const empty = { id: "", label: "", line: "", city: "", pincode: "" };
+
+function Profile() {
+  const { addresses, save, setDefault } = useAddresses();
+  const [form, setForm] = useState<typeof empty | null>(null);
+
+  const openNew = () => setForm({ ...empty, id: `addr-${Date.now()}` });
+  const openEdit = (a: Address) =>
+    setForm({ id: a.id, label: a.label, line: a.line, city: a.city, pincode: a.pincode });
+
+  const submit = () => {
+    if (!form) return;
+    if (!form.label.trim() || !form.line.trim() || !form.city.trim() || !form.pincode.trim()) {
+      toast.error("Please fill all address fields");
+      return;
+    }
+    save(form);
+    setForm(null);
+    toast.success("Address saved");
+  };
+
   return (
-    <div className="flex gap-3 px-4 py-3.5">
-      <Icon className="mt-0.5 size-4 shrink-0 text-primary" />
-      <div className="min-w-0">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
-          {label}
-        </p>
-        <p className="mt-0.5 break-words text-sm font-semibold text-foreground">{value}</p>
-      </div>
+    <div className="animate-page pb-28">
+      <AppBar title="Profile" back={false} />
+
+      <section className="divide-y divide-border px-4">
+        <Field label="Business Name" value={dealer.business} />
+        <Field label="Owner Name" value={dealer.owner} />
+        <Field label="Mobile Number" value={dealer.phone} />
+      </section>
+
+      <section className="mt-6 px-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-semibold">Delivery Addresses</h2>
+          <Button variant="outline" size="sm" onClick={openNew}>
+            Add Address
+          </Button>
+        </div>
+
+        <ul className="mt-3 space-y-3">
+          {addresses.map((a) => (
+            <li key={a.id} className="rounded-2xl border border-border p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">{a.label}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    {a.line}, {a.city} — {a.pincode}
+                  </p>
+                </div>
+                {a.isDefault ? (
+                  <span className="shrink-0 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">
+                    Default
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => openEdit(a)}>
+                  Edit
+                </Button>
+                {!a.isDefault ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setDefault(a.id);
+                      toast.success("Default address updated");
+                    }}
+                  >
+                    Set Default
+                  </Button>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <Dialog open={form !== null} onOpenChange={(o) => !o && setForm(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Address details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            {(
+              [
+                ["label", "Label (Shop, Godown)"],
+                ["line", "Address line"],
+                ["city", "City & state"],
+                ["pincode", "Pincode"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key}>
+                <Label htmlFor={key} className="text-xs">
+                  {label}
+                </Label>
+                <Input
+                  id={key}
+                  className="mt-1.5"
+                  value={form?.[key] ?? ""}
+                  onChange={(e) =>
+                    setForm((f) => (f ? { ...f, [key]: e.target.value } : f))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button className="w-full" onClick={submit}>
+              Save Address
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <BottomNav />
     </div>
   );
 }
 
-function Profile() {
+function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="pb-28">
-      <AppBar title="Profile" back={false} />
-
-      <section className="px-4 pt-5">
-        <div className="rounded-2xl bg-primary p-5 text-primary-foreground shadow-raised">
-          <div className="flex items-center gap-4">
-            <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-primary-foreground/15 text-lg font-extrabold">
-              RT
-            </span>
-            <div className="min-w-0">
-              <h2 className="truncate text-lg font-extrabold">{dealer.name}</h2>
-              <p className="truncate text-xs text-primary-foreground/80">
-                {dealer.tier} · Since {dealer.since}
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="rounded-xl bg-primary-foreground/12 p-3">
-              <p className="text-[0.65rem] text-primary-foreground/75">Dealer code</p>
-              <p className="mt-0.5 text-sm font-bold">{dealer.code}</p>
-            </div>
-            <div className="rounded-xl bg-primary-foreground/12 p-3">
-              <p className="text-[0.65rem] text-primary-foreground/75">Credit available</p>
-              <p className="mt-0.5 text-sm font-bold tabular-nums">₹2,40,000</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 pt-6">
-        <SectionHeader title="Contact details" />
-        <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-          <Row icon={Phone} label="Contact person" value={`${dealer.contact} · ${dealer.phone}`} />
-          <Row icon={Mail} label="Email" value={dealer.email} />
-        </div>
-      </section>
-
-      <section className="px-4 pt-6">
-        <SectionHeader title="Delivery address" />
-        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-          <Row icon={MapPin} label="Primary godown" value={dealer.address} />
-        </div>
-      </section>
-
-      <section className="px-4 pt-6">
-        <SectionHeader title="Business information" />
-        <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-          <Row icon={Building2} label="Legal entity" value={`${dealer.name} (Proprietorship)`} />
-          <Row icon={FileText} label="GSTIN" value={dealer.gstin} />
-        </div>
-      </section>
-
-      <section className="px-4 pt-6">
-        <Link
-          to="/orders"
-          className="press flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-card"
-        >
-          <Headphones className="size-4 shrink-0 text-primary" />
-          <span className="min-w-0 flex-1 text-sm font-semibold text-foreground">
-            Order support & invoices
-          </span>
-          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-        </Link>
-      </section>
-
-      <section className="px-4 pt-4">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" size="xl" className="w-full text-destructive">
-              <LogOut className="size-4" /> Logout
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-2xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Log out of FeedLink?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Your cart is saved on this device, so you can pick up right where you left off.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-xl">Stay signed in</AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Link to="/login" className="rounded-xl">
-                  Logout
-                </Link>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </section>
-
-      <BottomNav />
+    <div className="py-4">
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p className="mt-1 text-base font-medium">{value}</p>
     </div>
   );
 }
