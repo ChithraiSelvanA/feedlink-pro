@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { z } from "zod";
 import { inr } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
+import { BottomNav } from "@/components/app/bottom-nav";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/order-success")({
@@ -33,7 +34,7 @@ function OrderSuccess() {
   }, []);
 
   return (
-    <div className="animate-page flex min-h-screen flex-col items-center px-6 pb-10 pt-24 text-center">
+    <div className="animate-page flex min-h-screen flex-col items-center px-6 pb-32 pt-24 text-center">
       <span className="grid size-16 place-items-center rounded-full bg-primary text-primary-foreground">
         <Check className="size-8" strokeWidth={2.5} />
       </span>
@@ -50,6 +51,9 @@ function OrderSuccess() {
           <Link to="/">Order Again</Link>
         </Button>
       </div>
+
+      <BottomNav />
     </div>
   );
 }
+

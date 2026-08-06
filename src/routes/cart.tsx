@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart";
 import { useAddresses } from "@/lib/addresses";
 import { getProduct, inr } from "@/lib/catalog";
 import { AppBar } from "@/components/app/app-bar";
+import { BottomNav } from "@/components/app/bottom-nav";
 import { CartLineRow } from "@/components/app/cards";
 import { EmptyState, Row } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ function Cart() {
 
   if (!lines.length) {
     return (
-      <div className="animate-page">
+      <div className="animate-page pb-28">
         <AppBar title="Cart" />
         <EmptyState
           icon={ShoppingCart}
@@ -58,13 +59,15 @@ function Cart() {
             </Button>
           }
         />
+        <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="animate-page pb-36">
+    <div className="animate-page pb-52">
       <AppBar title="Cart" />
+
 
       <section className="border-b border-border px-4 py-4">
         <div className="flex items-start gap-3">
@@ -112,7 +115,7 @@ function Cart() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
         <div className="mx-auto max-w-md">
           <Button
             size="xl"
@@ -123,6 +126,9 @@ function Cart() {
           </Button>
         </div>
       </div>
+
+      <BottomNav />
+
 
       <Dialog open={picker} onOpenChange={setPicker}>
         <DialogContent className="max-w-sm">
