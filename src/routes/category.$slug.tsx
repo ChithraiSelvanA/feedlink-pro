@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Package } from "lucide-react";
-import { getCategory, productsIn, type Category, type Product } from "@/lib/catalog";
+import { getCategory, inr, productsIn, type Category, type Product } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
 import { AppBar } from "@/components/app/app-bar";
+import { BottomNav } from "@/components/app/bottom-nav";
 import { ProductOrderCard } from "@/components/app/cards";
 import { EmptyState } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
