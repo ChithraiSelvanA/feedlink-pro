@@ -115,7 +115,7 @@ function Cart() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
         <div className="mx-auto max-w-md">
           <Button
             size="xl"
@@ -126,6 +126,9 @@ function Cart() {
           </Button>
         </div>
       </div>
+
+      <BottomNav />
+
 
       <Dialog open={picker} onOpenChange={setPicker}>
         <DialogContent className="max-w-sm">
