@@ -46,7 +46,7 @@ function Cart() {
 
   if (!lines.length) {
     return (
-      <div className="animate-page">
+      <div className="animate-page pb-28">
         <AppBar title="Cart" />
         <EmptyState
           icon={ShoppingCart}
@@ -58,13 +58,15 @@ function Cart() {
             </Button>
           }
         />
+        <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="animate-page pb-36">
+    <div className="animate-page pb-52">
       <AppBar title="Cart" />
+
 
       <section className="border-b border-border px-4 py-4">
         <div className="flex items-start gap-3">
