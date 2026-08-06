@@ -37,10 +37,10 @@ function CategoryProducts() {
     category: Category;
     items: Product[];
   };
-  const { bags } = useCart();
+  const { bags, subtotal } = useCart();
 
   return (
-    <div className="animate-page pb-28">
+    <div className="animate-page pb-44">
       <AppBar title={category.name} cart />
 
       {items.length ? (
@@ -58,14 +58,23 @@ function CategoryProducts() {
       )}
 
       {bags > 0 ? (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <div className="mx-auto max-w-md">
-            <Button asChild size="lg" className="w-full">
-              <Link to="/cart">View Cart · {bags} bags</Link>
+        <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
+          <div className="mx-auto flex max-w-md items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-lg font-semibold tabular-nums">{inr(subtotal)}</p>
+              <p className="text-xs text-muted-foreground">
+                {bags} {bags === 1 ? "bag" : "bags"} in cart
+              </p>
+            </div>
+            <Button asChild size="lg">
+              <Link to="/cart">View Cart</Link>
             </Button>
           </div>
         </div>
       ) : null}
+
+      <BottomNav />
     </div>
   );
 }
+
