@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { z } from "zod";
 import { inr } from "@/lib/catalog";
 import { useCart } from "@/lib/cart";
+import { BottomNav } from "@/components/app/bottom-nav";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/order-success")({
