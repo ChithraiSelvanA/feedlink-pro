@@ -131,7 +131,7 @@ function Settings() {
             <Button
               variant="destructive"
               className="w-full"
-              onClick={() => navigate({ to: "/login" })}
+              onClick={() => { signOut(); navigate({ to: "/login", replace: true }); }}
             >
               Logout
             </Button>
