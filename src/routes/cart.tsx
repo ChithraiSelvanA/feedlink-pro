@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart";
 import { useAddresses } from "@/lib/addresses";
 import { getProduct, inr } from "@/lib/catalog";
 import { AppBar } from "@/components/app/app-bar";
+import { BottomNav } from "@/components/app/bottom-nav";
 import { CartLineRow } from "@/components/app/cards";
 import { EmptyState, Row } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
