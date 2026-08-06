@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ChevronRight, FileText, KeyRound, LogOut } from "lucide-react";
 import { AppBar } from "@/components/app/app-bar";
 import { BottomNav } from "@/components/app/bottom-nav";
+import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/settings")({
 
 function Settings() {
   const navigate = useNavigate();
+  const { logout: signOut } = useAuth();
   const [pwd, setPwd] = useState(false);
   const [logout, setLogout] = useState(false);
   const [next, setNext] = useState("");
@@ -129,7 +131,7 @@ function Settings() {
             <Button
               variant="destructive"
               className="w-full"
-              onClick={() => navigate({ to: "/login" })}
+              onClick={() => { signOut(); navigate({ to: "/login", replace: true }); }}
             >
               Logout
             </Button>

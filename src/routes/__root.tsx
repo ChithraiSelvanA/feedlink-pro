@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { AddressProvider } from "@/lib/addresses";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
 
@@ -127,14 +129,36 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <AddressProvider>
-          <div className="mx-auto min-h-screen w-full max-w-md bg-background">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </div>
-          <Toaster position="top-center" />
+          <AuthProvider>
+            <div className="mx-auto min-h-screen w-full max-w-md bg-background">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <AuthGate>
+                <Outlet />
+              </AuthGate>
+            </div>
+            <Toaster position="top-center" />
+          </AuthProvider>
         </AddressProvider>
       </CartProvider>
     </QueryClientProvider>
   );
 }
 
+const PUBLIC_PATHS = ["/login", "/privacy-policy"];
+
+function AuthGate({ children }: { children: ReactNode }) {
+  const { ready, session } = useAuth();
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isPublic = PUBLIC_PATHS.includes(pathname);
+
+  useEffect(() => {
+    if (!ready) return;
+    if (!session && !isPublic) router.navigate({ to: "/login", replace: true });
+    if (session && pathname === "/login") router.navigate({ to: "/", replace: true });
+  }, [ready, session, isPublic, pathname, router]);
+
+  if (!ready) return null;
+  if (!session && !isPublic) return null;
+  return <>{children}</>;
+}
