@@ -97,7 +97,7 @@ function Cart() {
       </section>
 
 
-      <section className="divide-y divide-border px-4">
+      <section className="glass-card mx-4 divide-y divide-border rounded-3xl px-4">
         {lines.map((l) => {
           const product = getProduct(l.productId);
           if (!product) return null;
@@ -114,7 +114,7 @@ function Cart() {
         })}
       </section>
 
-      <section className="mt-2 border-t border-border px-4 py-3">
+      <section className="glass-card mx-4 mt-4 rounded-3xl px-4 py-3">
         <Row label={`Subtotal (${bags} bags)`} value={inr(subtotal)} />
         <Row label="Delivery" value={delivery === 0 ? "Free" : inr(delivery)} />
         <div className="border-t border-border">
@@ -122,7 +122,8 @@ function Cart() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
+      <div className="glass-strong fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-glass-border px-4 py-3 shadow-raised">
+
         <div className="mx-auto max-w-md">
           <Button
             size="xl"
