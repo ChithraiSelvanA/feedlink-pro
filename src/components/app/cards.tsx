@@ -44,7 +44,7 @@ export function ProductOrderCard({ product }: { product: Product }) {
   const price = product.sizes.find((s) => s.kg === kg)?.price ?? 0;
 
   return (
-    <article className="rounded-2xl border border-border bg-card p-4">
+    <article className="glass-card rounded-3xl p-4">
       <div className="flex gap-4">
         <img
           src={product.image}
@@ -52,10 +52,10 @@ export function ProductOrderCard({ product }: { product: Product }) {
           loading="lazy"
           width={512}
           height={512}
-          className="size-20 shrink-0 rounded-xl border border-border object-cover"
+          className="size-20 shrink-0 rounded-2xl border border-glass-border object-cover shadow-card"
         />
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold leading-snug">{product.name}</h3>
+          <h3 className="text-base font-semibold leading-snug tracking-tight">{product.name}</h3>
           <p className="mt-0.5 text-sm text-muted-foreground">Brand: {product.brand}</p>
           {!product.inStock ? (
             <p className="mt-1 text-xs font-medium text-destructive">Out of stock</p>
@@ -64,14 +64,17 @@ export function ProductOrderCard({ product }: { product: Product }) {
       </div>
 
       <div className={cn("mt-4", !product.inStock && "opacity-50")}>
-        <p className="mb-2 text-xs font-medium text-muted-foreground">Bag Size</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Bag Size
+        </p>
         <SizeSelector sizes={product.sizes.map((s) => s.kg)} value={kg} onChange={setKg} />
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-xl font-semibold tabular-nums">{inr(price)}</p>
+      <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-glass-border bg-primary-soft/70 px-3 py-2.5">
+        <p className="text-gradient text-2xl font-bold tabular-nums">{inr(price)}</p>
         <QuantityStepper qty={qty} onChange={setQty} disabled={!product.inStock} />
       </div>
+
 
       <Button
         size="lg"
