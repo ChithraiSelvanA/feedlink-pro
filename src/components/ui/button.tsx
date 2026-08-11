@@ -9,18 +9,20 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-card hover:bg-primary/92",
+        default:
+          "gradient-primary text-primary-foreground shadow-glow hover:brightness-[1.06] hover:shadow-raised",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-border bg-card text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "glass border text-foreground shadow-card hover:bg-primary-soft hover:text-primary",
         secondary: "bg-accent text-accent-foreground hover:bg-accent/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-primary-soft hover:text-primary",
         link: "text-primary underline-offset-4 hover:underline",
         /* app variants */
         primaryLg:
-          "bg-primary text-primary-foreground shadow-raised hover:bg-primary/92 rounded-2xl",
+          "gradient-primary rounded-2xl text-primary-foreground shadow-glow hover:brightness-[1.06]",
         soft: "bg-primary-soft text-primary hover:bg-primary-soft/70",
-        chip: "rounded-full border border-border bg-card text-foreground hover:border-primary hover:text-primary",
+        chip: "glass rounded-full border text-foreground hover:text-primary",
+
       },
       size: {
         default: "h-11 px-5",
