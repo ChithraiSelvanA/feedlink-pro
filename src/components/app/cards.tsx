@@ -22,17 +22,18 @@ export function CategoryCard({ category }: { category: Category }) {
     <Link
       to="/category/$slug"
       params={{ slug: category.slug }}
-      className="press flex min-h-20 items-center gap-4 rounded-2xl border border-border bg-card px-4 py-4 hover:bg-muted/50"
+      className="press glass-card flex min-h-20 items-center gap-4 rounded-2xl px-4 py-4 hover:-translate-y-0.5 hover:shadow-raised"
     >
-      <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+      <span className="gradient-primary grid size-12 shrink-0 place-items-center rounded-2xl text-primary-foreground shadow-glow">
         <Icon className="size-6" strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-base font-semibold">{category.name}</span>
+        <span className="block truncate text-base font-semibold tracking-tight">{category.name}</span>
         <span className="block text-sm text-muted-foreground">{category.items} products</span>
       </span>
-      <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
+      <ChevronRight className="size-5 shrink-0 text-primary/70" />
     </Link>
+
   );
 }
 
