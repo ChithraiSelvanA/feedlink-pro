@@ -16,7 +16,7 @@ export function QuantityStepper({
   return (
     <div
       className={cn(
-        "inline-flex h-11 items-center rounded-xl border border-border",
+        "glass inline-flex h-11 items-center rounded-2xl border shadow-card",
         disabled && "pointer-events-none opacity-40",
       )}
     >
@@ -24,7 +24,7 @@ export function QuantityStepper({
         type="button"
         aria-label="Decrease quantity"
         onClick={() => onChange(Math.max(min, qty - 1))}
-        className="press grid size-11 place-items-center rounded-l-xl text-foreground hover:bg-muted"
+        className="press grid size-11 place-items-center rounded-l-2xl text-primary hover:bg-primary-soft"
       >
         <Minus className="size-4" />
       </button>
@@ -38,11 +38,12 @@ export function QuantityStepper({
         type="button"
         aria-label="Increase quantity"
         onClick={() => onChange(qty + 1)}
-        className="press grid size-11 place-items-center rounded-r-xl text-foreground hover:bg-muted"
+        className="press grid size-11 place-items-center rounded-r-2xl text-primary hover:bg-primary-soft"
       >
         <Plus className="size-4" />
       </button>
     </div>
+
   );
 }
 
