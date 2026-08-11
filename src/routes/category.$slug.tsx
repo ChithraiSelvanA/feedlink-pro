@@ -59,10 +59,10 @@ function CategoryProducts() {
       )}
 
       {bags > 0 ? (
-        <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
+        <div className="glass-strong fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-glass-border px-4 py-3 shadow-raised">
           <div className="mx-auto flex max-w-md items-center gap-3">
             <div className="min-w-0 flex-1">
-              <p className="text-lg font-semibold tabular-nums">{inr(subtotal)}</p>
+              <p className="text-gradient text-xl font-bold tabular-nums">{inr(subtotal)}</p>
               <p className="text-xs text-muted-foreground">
                 {bags} {bags === 1 ? "bag" : "bags"} in cart
               </p>
@@ -72,6 +72,7 @@ function CategoryProducts() {
             </Button>
           </div>
         </div>
+
       ) : null}
 
       <BottomNav />

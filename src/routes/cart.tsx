@@ -69,28 +69,35 @@ function Cart() {
       <AppBar title="Cart" />
 
 
-      <section className="border-b border-border px-4 py-4">
-        <div className="flex items-start gap-3">
-          <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-muted-foreground">Delivery address</p>
-            <p className="mt-1 text-sm font-semibold">{selected?.label}</p>
-            <p className="text-sm text-muted-foreground">
-              {selected?.line}, {selected?.city} — {selected?.pincode}
-            </p>
+      <section className="px-4 py-4">
+        <div className="glass-card rounded-3xl p-4">
+          <div className="flex items-start gap-3">
+            <span className="gradient-primary grid size-10 shrink-0 place-items-center rounded-2xl text-primary-foreground shadow-glow">
+              <MapPin className="size-5" strokeWidth={1.75} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Delivery address
+              </p>
+              <p className="mt-1 text-sm font-semibold">{selected?.label}</p>
+              <p className="text-sm text-muted-foreground">
+                {selected?.line}, {selected?.city} — {selected?.pincode}
+              </p>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="default"
+            className="mt-3 w-full"
+            onClick={() => setPicker(true)}
+          >
+            Change Address
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="default"
-          className="mt-3 w-full"
-          onClick={() => setPicker(true)}
-        >
-          Change Address
-        </Button>
       </section>
 
-      <section className="divide-y divide-border px-4">
+
+      <section className="glass-card mx-4 divide-y divide-border rounded-3xl px-4">
         {lines.map((l) => {
           const product = getProduct(l.productId);
           if (!product) return null;
@@ -107,7 +114,7 @@ function Cart() {
         })}
       </section>
 
-      <section className="mt-2 border-t border-border px-4 py-3">
+      <section className="glass-card mx-4 mt-4 rounded-3xl px-4 py-3">
         <Row label={`Subtotal (${bags} bags)`} value={inr(subtotal)} />
         <Row label="Delivery" value={delivery === 0 ? "Free" : inr(delivery)} />
         <div className="border-t border-border">
@@ -115,7 +122,8 @@ function Cart() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-border bg-card px-4 py-3">
+      <div className="glass-strong fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-40 border-t border-glass-border px-4 py-3 shadow-raised">
+
         <div className="mx-auto max-w-md">
           <Button
             size="xl"

@@ -22,17 +22,18 @@ export function CategoryCard({ category }: { category: Category }) {
     <Link
       to="/category/$slug"
       params={{ slug: category.slug }}
-      className="press flex min-h-20 items-center gap-4 rounded-2xl border border-border bg-card px-4 py-4 hover:bg-muted/50"
+      className="press glass-card flex min-h-20 items-center gap-4 rounded-2xl px-4 py-4 hover:-translate-y-0.5 hover:shadow-raised"
     >
-      <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+      <span className="gradient-primary grid size-12 shrink-0 place-items-center rounded-2xl text-primary-foreground shadow-glow">
         <Icon className="size-6" strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-base font-semibold">{category.name}</span>
+        <span className="block truncate text-base font-semibold tracking-tight">{category.name}</span>
         <span className="block text-sm text-muted-foreground">{category.items} products</span>
       </span>
-      <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
+      <ChevronRight className="size-5 shrink-0 text-primary/70" />
     </Link>
+
   );
 }
 
@@ -43,7 +44,7 @@ export function ProductOrderCard({ product }: { product: Product }) {
   const price = product.sizes.find((s) => s.kg === kg)?.price ?? 0;
 
   return (
-    <article className="rounded-2xl border border-border bg-card p-4">
+    <article className="glass-card rounded-3xl p-4">
       <div className="flex gap-4">
         <img
           src={product.image}
@@ -51,10 +52,10 @@ export function ProductOrderCard({ product }: { product: Product }) {
           loading="lazy"
           width={512}
           height={512}
-          className="size-20 shrink-0 rounded-xl border border-border object-cover"
+          className="size-20 shrink-0 rounded-2xl border border-glass-border object-cover shadow-card"
         />
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold leading-snug">{product.name}</h3>
+          <h3 className="text-base font-semibold leading-snug tracking-tight">{product.name}</h3>
           <p className="mt-0.5 text-sm text-muted-foreground">Brand: {product.brand}</p>
           {!product.inStock ? (
             <p className="mt-1 text-xs font-medium text-destructive">Out of stock</p>
@@ -63,14 +64,17 @@ export function ProductOrderCard({ product }: { product: Product }) {
       </div>
 
       <div className={cn("mt-4", !product.inStock && "opacity-50")}>
-        <p className="mb-2 text-xs font-medium text-muted-foreground">Bag Size</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Bag Size
+        </p>
         <SizeSelector sizes={product.sizes.map((s) => s.kg)} value={kg} onChange={setKg} />
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-xl font-semibold tabular-nums">{inr(price)}</p>
+      <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-glass-border bg-primary-soft/70 px-3 py-2.5">
+        <p className="text-gradient text-2xl font-bold tabular-nums">{inr(price)}</p>
         <QuantityStepper qty={qty} onChange={setQty} disabled={!product.inStock} />
       </div>
+
 
       <Button
         size="lg"
