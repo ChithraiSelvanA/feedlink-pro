@@ -65,16 +65,17 @@ export function SizeSelector({
           onClick={() => onChange(kg)}
           aria-pressed={value === kg}
           className={cn(
-            "press h-10 min-w-20 rounded-xl border px-4 text-sm font-medium tabular-nums",
+            "press h-10 min-w-20 rounded-2xl border px-4 text-sm font-semibold tabular-nums",
             value === kg
-              ? "border-primary bg-primary-soft text-primary"
-              : "border-border text-muted-foreground hover:bg-muted",
+              ? "gradient-primary border-transparent text-primary-foreground shadow-glow"
+              : "border-glass-border bg-glass text-muted-foreground hover:text-primary",
           )}
         >
           {kg} KG
         </button>
       ))}
     </div>
+
   );
 }
 
