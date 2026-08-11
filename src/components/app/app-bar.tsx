@@ -22,19 +22,25 @@ export function AppBar({
   const { bags } = useCart();
 
   return (
-    <header className={cn("sticky top-0 z-30 border-b border-border bg-card", className)}>
+    <header
+      className={cn(
+        "glass-strong sticky top-0 z-30 border-b border-glass-border shadow-card",
+        className,
+      )}
+    >
       <div className="mx-auto flex h-16 max-w-md items-center gap-2 px-4">
         {back ? (
           <button
             type="button"
             onClick={() => router.history.back()}
             aria-label="Go back"
-            className="press -ml-2 grid size-11 shrink-0 place-items-center rounded-full text-foreground hover:bg-muted"
+            className="press -ml-2 grid size-11 shrink-0 place-items-center rounded-full text-foreground hover:bg-primary-soft"
           >
             <ArrowLeft className="size-5" />
           </button>
         ) : null}
-        <h1 className="min-w-0 flex-1 truncate text-lg font-semibold">{title}</h1>
+        <h1 className="min-w-0 flex-1 truncate text-lg font-semibold tracking-tight">{title}</h1>
+
         {action}
         {cart ? (
           <Link
