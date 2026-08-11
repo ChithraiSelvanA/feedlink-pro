@@ -130,7 +130,7 @@ function RootComponent() {
       <CartProvider>
         <AddressProvider>
           <AuthProvider>
-            <div className="mx-auto min-h-screen w-full max-w-md bg-background">
+            <div className="mx-auto min-h-screen w-full max-w-md">
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <AuthGate>
                 <Outlet />
