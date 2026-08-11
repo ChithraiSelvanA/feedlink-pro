@@ -46,16 +46,17 @@ export function AppBar({
           <Link
             to="/cart"
             aria-label="Cart"
-            className="press relative -mr-2 grid size-11 shrink-0 place-items-center rounded-full text-foreground hover:bg-muted"
+            className="press relative -mr-2 grid size-11 shrink-0 place-items-center rounded-full border border-glass-border bg-glass text-primary shadow-card hover:bg-primary-soft"
           >
             <ShoppingCart className="size-5" />
             {bags > 0 ? (
-              <span className="absolute right-1 top-1 animate-pop rounded-full bg-primary px-1.5 text-[0.625rem] font-semibold text-primary-foreground">
+              <span className="gradient-primary absolute -right-0.5 -top-0.5 animate-pop rounded-full px-1.5 text-[0.625rem] font-semibold text-primary-foreground shadow-glow">
                 {bags}
               </span>
             ) : null}
           </Link>
         ) : null}
+
       </div>
     </header>
   );
