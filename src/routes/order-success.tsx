@@ -35,13 +35,14 @@ function OrderSuccess() {
 
   return (
     <div className="animate-page flex min-h-screen flex-col items-center px-6 pb-32 pt-24 text-center">
-      <span className="grid size-16 place-items-center rounded-full bg-primary text-primary-foreground">
+      <span className="gradient-primary grid size-16 place-items-center rounded-full text-primary-foreground shadow-glow">
         <Check className="size-8" strokeWidth={2.5} />
       </span>
-      <h1 className="mt-6 text-xl font-semibold">Order placed</h1>
+      <h1 className="mt-6 text-2xl font-bold tracking-tight">Order placed</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         Order {orderId} {typeof total === "number" ? `· ${inr(total)}` : ""}
       </p>
+
 
       <div className="mt-auto w-full space-y-3 pt-12">
         <Button asChild size="xl" className="w-full">
