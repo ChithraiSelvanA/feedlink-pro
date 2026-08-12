@@ -60,7 +60,7 @@ function Profile() {
     <div className="animate-page pb-28">
       <AppBar title="Profile" back={false} />
 
-      <section className="divide-y divide-border px-4">
+      <section className="glass-card mx-4 mt-4 divide-y divide-border rounded-3xl px-4">
         <Field label="Business Name" value={dealer.business} />
         <Field label="Owner Name" value={dealer.owner} />
         <Field label="Mobile Number" value={dealer.phone} />
@@ -68,7 +68,7 @@ function Profile() {
 
       <section className="mt-6 px-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold">Delivery Addresses</h2>
+          <h2 className="text-base font-semibold tracking-tight">Delivery Addresses</h2>
           <Button variant="outline" size="sm" onClick={openNew}>
             Add Address
           </Button>
@@ -76,7 +76,8 @@ function Profile() {
 
         <ul className="mt-3 space-y-3">
           {addresses.map((a) => (
-            <li key={a.id} className="rounded-2xl border border-border p-4">
+            <li key={a.id} className="glass-card rounded-3xl p-4">
+
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold">{a.label}</p>

@@ -48,10 +48,11 @@ function Login() {
 
   return (
     <div className="animate-page flex min-h-screen flex-col px-6 pt-24">
-      <h1 className="text-2xl font-semibold">FeedLink</h1>
+      <h1 className="text-gradient text-3xl font-extrabold tracking-tight">FeedLink</h1>
       <p className="mt-1 text-sm text-muted-foreground">Dealer feed ordering</p>
 
-      <form onSubmit={submit} className="mt-10 space-y-5">
+      <form onSubmit={submit} className="glass-card mt-8 space-y-5 rounded-3xl p-5">
+
         <div>
           <Label htmlFor="phone" className="text-xs">
             Mobile number
