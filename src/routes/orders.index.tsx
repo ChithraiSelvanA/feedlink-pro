@@ -34,18 +34,18 @@ function Orders() {
     <div className="animate-page pb-28">
       <AppBar title="Orders" back={false} cart />
 
-      <ul className="divide-y divide-border px-4">
+      <ul className="space-y-3 px-4 pt-4">
         {orders.map((o) => (
-          <li key={o.id} className="py-4">
+          <li key={o.id} className="glass-card rounded-3xl p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-base font-semibold">{o.id}</p>
+                <p className="text-base font-semibold tracking-tight">{o.id}</p>
                 <p className="mt-0.5 text-sm text-muted-foreground">{o.date}</p>
                 <div className="mt-1.5">
                   <StatusText status={o.status} />
                 </div>
               </div>
-              <p className="text-base font-semibold tabular-nums">{inr(o.total)}</p>
+              <p className="text-gradient text-lg font-bold tabular-nums">{inr(o.total)}</p>
             </div>
             <Button
               variant="outline"
@@ -61,6 +61,7 @@ function Orders() {
           </li>
         ))}
       </ul>
+
 
       <BottomNav />
     </div>
