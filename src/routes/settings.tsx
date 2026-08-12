@@ -45,14 +45,14 @@ function Settings() {
     <div className="animate-page pb-28">
       <AppBar title="Settings" back={false} />
 
-      <ul className="divide-y divide-border px-4">
+      <ul className="glass-card mx-4 mt-4 divide-y divide-border rounded-3xl px-4">
         <li>
           <button
             type="button"
             onClick={() => setPwd(true)}
             className="press flex min-h-14 w-full items-center gap-3 py-4 text-left"
           >
-            <KeyRound className="size-5 text-muted-foreground" strokeWidth={1.75} />
+            <KeyRound className="size-5 text-primary" strokeWidth={1.75} />
             <span className="flex-1 text-base font-medium">Change Password</span>
             <ChevronRight className="size-5 text-muted-foreground" />
           </button>
@@ -62,7 +62,7 @@ function Settings() {
             href="/privacy-policy"
             className="press flex min-h-14 w-full items-center gap-3 py-4"
           >
-            <FileText className="size-5 text-muted-foreground" strokeWidth={1.75} />
+            <FileText className="size-5 text-primary" strokeWidth={1.75} />
             <span className="flex-1 text-base font-medium">Privacy Policy</span>
             <ChevronRight className="size-5 text-muted-foreground" />
           </a>
@@ -82,6 +82,7 @@ function Settings() {
           </button>
         </li>
       </ul>
+
 
       <Dialog open={pwd} onOpenChange={setPwd}>
         <DialogContent className="max-w-sm">
