@@ -16,6 +16,7 @@ import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 
@@ -54,6 +55,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders/': typeof OrdersIndexRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders': typeof OrdersIndexRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/category/$slug': typeof CategorySlugRoute
   '/orders/': typeof OrdersIndexRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/profile'
     | '/settings'
+    | '/signup'
     | '/category/$slug'
     | '/orders/'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/profile'
     | '/settings'
+    | '/signup'
     | '/category/$slug'
     | '/orders'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/profile'
     | '/settings'
+    | '/signup'
     | '/category/$slug'
     | '/orders/'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
 }
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/category/$slug': {
       id: '/category/$slug'
       path: '/category/$slug'
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrdersIndexRoute: OrdersIndexRoute,
 }

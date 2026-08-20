@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,8 +41,12 @@ function Login() {
       setError("Enter your password");
       return;
     }
+    const err = signIn(phone, password);
+    if (err) {
+      setError(err);
+      return;
+    }
     setError("");
-    login(phone);
     navigate({ to: "/", replace: true });
   };
 
@@ -92,6 +96,13 @@ function Login() {
           Login
         </Button>
       </form>
+
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        New dealer?{" "}
+        <Link to="/signup" className="font-semibold text-primary">
+          Create an account
+        </Link>
+      </p>
 
       <p className="mt-auto pb-8 pt-10 text-center text-xs text-muted-foreground">
         Authorised dealers only
