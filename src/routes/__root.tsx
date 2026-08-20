@@ -144,7 +144,7 @@ function RootComponent() {
   );
 }
 
-const PUBLIC_PATHS = ["/login", "/privacy-policy"];
+const PUBLIC_PATHS = ["/login", "/signup", "/privacy-policy"];
 
 function AuthGate({ children }: { children: ReactNode }) {
   const { ready, session } = useAuth();
@@ -155,7 +155,8 @@ function AuthGate({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready) return;
     if (!session && !isPublic) router.navigate({ to: "/login", replace: true });
-    if (session && pathname === "/login") router.navigate({ to: "/", replace: true });
+    if (session && (pathname === "/login" || pathname === "/signup"))
+      router.navigate({ to: "/", replace: true });
   }, [ready, session, isPublic, pathname, router]);
 
   if (!ready) return null;
