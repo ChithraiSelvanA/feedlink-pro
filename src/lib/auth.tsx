@@ -30,14 +30,19 @@ export type SignupInput = {
 type AuthValue = {
   ready: boolean;
   session: Session | null;
-  /** Returns an error message, or null on success. */
-  signIn: (phone: string, password: string) => string | null;
-  /** Returns an error message, or null on success. */
-  signUp: (input: SignupInput) => string | null;
+  /** Resolves to an error message, or null on success. */
+  signIn: (phone: string, password: string) => Promise<string | null>;
+  signUp: (input: SignupInput) => Promise<string | null>;
+  /** Checks a mobile number has a registered account (forgot-password step 1). */
+  findAccount: (phone: string) => Promise<{ ok: boolean; error?: string; owner?: string }>;
+  /** Sets a new password for a registered mobile number. */
+  resetPassword: (phone: string, password: string) => Promise<string | null>;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthValue | null>(null);
+
+const wait = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
 function readAccounts(): Account[] {
   try {
@@ -80,7 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = useCallback(
-    (phone: string, password: string) => {
+    async (phone: string, password: string) => {
+      await wait();
       const accounts = readAccounts();
       if (accounts.length === 0) {
         // No local accounts yet — allow first-time access for demo dealers.
@@ -97,7 +103,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signUp = useCallback(
-    ({ phone, password, business, owner }: SignupInput) => {
+    async ({ phone, password, business, owner }: SignupInput) => {
+      await wait();
       const accounts = readAccounts();
       if (accounts.some((a) => a.phone === phone)) {
         return "An account already exists for this mobile number";
@@ -110,6 +117,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [persist],
   );
 
+  const findAccount = useCallback(async (phone: string) => {
+    await wait();
+    const match = readAccounts().find((a) => a.phone === phone);
+    if (!match) return { ok: false, error: "No account found for this mobile number" };
+    return { ok: true, owner: match.owner };
+  }, []);
+
+  const resetPassword = useCallback(async (phone: string, password: string) => {
+    await wait();
+    const accounts = readAccounts();
+    const idx = accounts.findIndex((a) => a.phone === phone);
+    if (idx === -1) return "No account found for this mobile number";
+    accounts[idx] = { ...accounts[idx], password };
+    writeAccounts(accounts);
+    return null;
+  }, []);
+
   const logout = useCallback(() => {
     setSession(null);
     try {
@@ -120,8 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ ready, session, signIn, signUp, logout }),
-    [ready, session, signIn, signUp, logout],
+    () => ({ ready, session, signIn, signUp, findAccount, resetPassword, logout }),
+    [ready, session, signIn, signUp, findAccount, resetPassword, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
