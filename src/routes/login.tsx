@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FormError } from "@/components/app/field";
 import { useAuth } from "@/lib/auth";
+import { fieldErrors, loginSchema } from "@/lib/auth-validation";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -29,24 +30,30 @@ function Login() {
   const { signIn } = useAuth();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const clear = (key: string) =>
+    setErrors((e) => {
+      const { [key]: _drop, form: _f, ...rest } = e;
+      return rest;
+    });
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.replace(/\D/g, "").length !== 10) {
-      setError("Enter a valid 10-digit mobile number");
+    const parsed = loginSchema.safeParse({ phone, password });
+    if (!parsed.success) {
+      setErrors(fieldErrors(parsed.error));
       return;
     }
-    if (password.length < 4) {
-      setError("Enter your password");
-      return;
-    }
-    const err = signIn(phone, password);
+    setErrors({});
+    setLoading(true);
+    const err = await signIn(parsed.data.phone, parsed.data.password);
+    setLoading(false);
     if (err) {
-      setError(err);
+      setErrors({ form: err });
       return;
     }
-    setError("");
     navigate({ to: "/", replace: true });
   };
 
@@ -55,45 +62,49 @@ function Login() {
       <h1 className="text-gradient text-3xl font-extrabold tracking-tight">FeedLink</h1>
       <p className="mt-1 text-sm text-muted-foreground">Dealer feed ordering</p>
 
-      <form onSubmit={submit} className="glass-card mt-8 space-y-5 rounded-3xl p-5">
+      <form onSubmit={submit} noValidate className="glass-card mt-8 space-y-5 rounded-3xl p-5">
+        <Field
+          id="phone"
+          label="Mobile number"
+          inputMode="numeric"
+          autoComplete="tel"
+          maxLength={10}
+          value={phone}
+          error={errors.phone}
+          disabled={loading}
+          onChange={(e) => {
+            setPhone(e.target.value.replace(/\D/g, ""));
+            clear("phone");
+          }}
+          placeholder="98765 43210"
+        />
 
-        <div>
-          <Label htmlFor="phone" className="text-xs">
-            Mobile number
-          </Label>
-          <Input
-            id="phone"
-            inputMode="numeric"
-            maxLength={10}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-            placeholder="98765 43210"
-            className="mt-1.5 h-12"
-          />
+        <Field
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          error={errors.password}
+          disabled={loading}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            clear("password");
+          }}
+          placeholder="Enter password"
+        />
+
+        <div className="text-right">
+          <Link to="/forgot-password" className="text-xs font-semibold text-primary">
+            Forgot password?
+          </Link>
         </div>
 
-        <div>
-          <Label htmlFor="password" className="text-xs">
-            Password
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            className="mt-1.5 h-12"
-          />
-        </div>
+        <FormError message={errors.form} />
 
-        {error ? (
-          <p role="alert" className="text-xs font-medium text-destructive">
-            {error}
-          </p>
-        ) : null}
-
-        <Button type="submit" size="xl" className="w-full">
-          Login
+        <Button type="submit" size="xl" className="w-full" disabled={loading}>
+          {loading ? <Loader2 className="animate-spin" /> : null}
+          {loading ? "Signing in…" : "Login"}
         </Button>
       </form>
 

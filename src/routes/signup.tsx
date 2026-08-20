@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FormError } from "@/components/app/field";
 import { useAuth } from "@/lib/auth";
+import { fieldErrors, signupSchema } from "@/lib/auth-validation";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -28,29 +29,44 @@ export const Route = createFileRoute("/signup")({
 function Signup() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
-  const [business, setBusiness] = useState("");
-  const [owner, setOwner] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState("");
+  const [values, setValues] = useState({
+    business: "",
+    owner: "",
+    phone: "",
+    password: "",
+    confirm: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (business.trim().length < 2) return setError("Enter your business name");
-    if (owner.trim().length < 2) return setError("Enter the owner name");
-    if (phone.length !== 10) return setError("Enter a valid 10-digit mobile number");
-    if (password.length < 4) return setError("Password must be at least 4 characters");
-    if (password !== confirm) return setError("Passwords do not match");
-
-    const err = signUp({
-      phone,
-      password,
-      business: business.trim().slice(0, 80),
-      owner: owner.trim().slice(0, 80),
+  const set = (key: keyof typeof values) => (v: string) => {
+    setValues((s) => ({ ...s, [key]: v }));
+    setErrors((e) => {
+      const { [key]: _drop, form: _f, ...rest } = e;
+      return rest;
     });
-    if (err) return setError(err);
-    setError("");
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = signupSchema.safeParse(values);
+    if (!parsed.success) {
+      setErrors(fieldErrors(parsed.error));
+      return;
+    }
+    setErrors({});
+    setLoading(true);
+    const err = await signUp({
+      phone: parsed.data.phone,
+      password: parsed.data.password,
+      business: parsed.data.business,
+      owner: parsed.data.owner,
+    });
+    setLoading(false);
+    if (err) {
+      setErrors({ form: err });
+      return;
+    }
     toast.success("Account created");
     navigate({ to: "/", replace: true });
   };
@@ -60,86 +76,71 @@ function Signup() {
       <h1 className="text-gradient text-3xl font-extrabold tracking-tight">Create account</h1>
       <p className="mt-1 text-sm text-muted-foreground">Dealer registration</p>
 
-      <form onSubmit={submit} className="glass-card mt-8 space-y-5 rounded-3xl p-5">
-        <div>
-          <Label htmlFor="business" className="text-xs">
-            Business name
-          </Label>
-          <Input
-            id="business"
-            value={business}
-            maxLength={80}
-            onChange={(e) => setBusiness(e.target.value)}
-            placeholder="Sri Balaji Feeds"
-            className="mt-1.5 h-12"
-          />
-        </div>
+      <form onSubmit={submit} noValidate className="glass-card mt-8 space-y-5 rounded-3xl p-5">
+        <Field
+          id="business"
+          label="Business name"
+          maxLength={80}
+          value={values.business}
+          error={errors.business}
+          disabled={loading}
+          onChange={(e) => set("business")(e.target.value)}
+          placeholder="Sri Balaji Feeds"
+        />
 
-        <div>
-          <Label htmlFor="owner" className="text-xs">
-            Owner name
-          </Label>
-          <Input
-            id="owner"
-            value={owner}
-            maxLength={80}
-            onChange={(e) => setOwner(e.target.value)}
-            placeholder="Ramesh Kumar"
-            className="mt-1.5 h-12"
-          />
-        </div>
+        <Field
+          id="owner"
+          label="Owner name"
+          maxLength={80}
+          value={values.owner}
+          error={errors.owner}
+          disabled={loading}
+          onChange={(e) => set("owner")(e.target.value)}
+          placeholder="Ramesh Kumar"
+        />
 
-        <div>
-          <Label htmlFor="phone" className="text-xs">
-            Mobile number
-          </Label>
-          <Input
-            id="phone"
-            inputMode="numeric"
-            maxLength={10}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-            placeholder="98765 43210"
-            className="mt-1.5 h-12"
-          />
-        </div>
+        <Field
+          id="phone"
+          label="Mobile number"
+          inputMode="numeric"
+          autoComplete="tel"
+          maxLength={10}
+          value={values.phone}
+          error={errors.phone}
+          disabled={loading}
+          onChange={(e) => set("phone")(e.target.value.replace(/\D/g, ""))}
+          placeholder="98765 43210"
+        />
 
-        <div>
-          <Label htmlFor="password" className="text-xs">
-            Password
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Create password"
-            className="mt-1.5 h-12"
-          />
-        </div>
+        <Field
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          value={values.password}
+          error={errors.password}
+          disabled={loading}
+          onChange={(e) => set("password")(e.target.value)}
+          placeholder="Minimum 6 characters"
+        />
 
-        <div>
-          <Label htmlFor="confirm" className="text-xs">
-            Confirm password
-          </Label>
-          <Input
-            id="confirm"
-            type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            placeholder="Re-enter password"
-            className="mt-1.5 h-12"
-          />
-        </div>
+        <Field
+          id="confirm"
+          label="Confirm password"
+          type="password"
+          autoComplete="new-password"
+          value={values.confirm}
+          error={errors.confirm}
+          disabled={loading}
+          onChange={(e) => set("confirm")(e.target.value)}
+          placeholder="Re-enter password"
+        />
 
-        {error ? (
-          <p role="alert" className="text-xs font-medium text-destructive">
-            {error}
-          </p>
-        ) : null}
+        <FormError message={errors.form} />
 
-        <Button type="submit" size="xl" className="w-full">
-          Create account
+        <Button type="submit" size="xl" className="w-full" disabled={loading}>
+          {loading ? <Loader2 className="animate-spin" /> : null}
+          {loading ? "Creating account…" : "Create account"}
         </Button>
       </form>
 
