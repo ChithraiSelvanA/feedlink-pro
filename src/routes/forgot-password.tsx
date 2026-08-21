@@ -46,7 +46,7 @@ function ForgotPassword() {
     e.preventDefault();
     const parsed = phoneField.safeParse(phone);
     if (!parsed.success) {
-      setErrors({ phone: parsed.error.issues[0].message });
+      setErrors({ phone: parsed.error.issues[0]!.message });
       return;
     }
     setErrors({});

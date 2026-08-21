@@ -129,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const accounts = readAccounts();
     const idx = accounts.findIndex((a) => a.phone === phone);
     if (idx === -1) return "No account found for this mobile number";
-    accounts[idx] = { ...accounts[idx], password };
+    accounts[idx] = { ...accounts[idx]!, password };
     writeAccounts(accounts);
     return null;
   }, []);

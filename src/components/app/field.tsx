@@ -30,7 +30,7 @@ export function Field({ label, id, error, className, ...props }: FieldProps) {
   );
 }
 
-export function FormError({ message }: { message?: string }) {
+export function FormError({ message }: { message?: string | undefined }) {
   if (!message) return null;
   return (
     <p
