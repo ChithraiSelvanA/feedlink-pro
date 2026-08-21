@@ -70,7 +70,7 @@ function Login() {
           autoComplete="tel"
           maxLength={10}
           value={phone}
-          error={errors.phone}
+          error={errors["phone"]}
           disabled={loading}
           onChange={(e) => {
             setPhone(e.target.value.replace(/\D/g, ""));
@@ -85,7 +85,7 @@ function Login() {
           type="password"
           autoComplete="current-password"
           value={password}
-          error={errors.password}
+          error={errors["password"]}
           disabled={loading}
           onChange={(e) => {
             setPassword(e.target.value);
@@ -100,7 +100,7 @@ function Login() {
           </Link>
         </div>
 
-        <FormError message={errors.form} />
+        <FormError message={errors["form"]} />
 
         <Button type="submit" size="xl" className="w-full" disabled={loading}>
           {loading ? <Loader2 className="animate-spin" /> : null}

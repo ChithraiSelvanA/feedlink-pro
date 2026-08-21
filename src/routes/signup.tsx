@@ -82,7 +82,7 @@ function Signup() {
           label="Business name"
           maxLength={80}
           value={values.business}
-          error={errors.business}
+          error={errors["business"]}
           disabled={loading}
           onChange={(e) => set("business")(e.target.value)}
           placeholder="Sri Balaji Feeds"
@@ -93,7 +93,7 @@ function Signup() {
           label="Owner name"
           maxLength={80}
           value={values.owner}
-          error={errors.owner}
+          error={errors["owner"]}
           disabled={loading}
           onChange={(e) => set("owner")(e.target.value)}
           placeholder="Ramesh Kumar"
@@ -106,7 +106,7 @@ function Signup() {
           autoComplete="tel"
           maxLength={10}
           value={values.phone}
-          error={errors.phone}
+          error={errors["phone"]}
           disabled={loading}
           onChange={(e) => set("phone")(e.target.value.replace(/\D/g, ""))}
           placeholder="98765 43210"
@@ -118,7 +118,7 @@ function Signup() {
           type="password"
           autoComplete="new-password"
           value={values.password}
-          error={errors.password}
+          error={errors["password"]}
           disabled={loading}
           onChange={(e) => set("password")(e.target.value)}
           placeholder="Minimum 6 characters"
@@ -130,13 +130,13 @@ function Signup() {
           type="password"
           autoComplete="new-password"
           value={values.confirm}
-          error={errors.confirm}
+          error={errors["confirm"]}
           disabled={loading}
           onChange={(e) => set("confirm")(e.target.value)}
           placeholder="Re-enter password"
         />
 
-        <FormError message={errors.form} />
+        <FormError message={errors["form"]} />
 
         <Button type="submit" size="xl" className="w-full" disabled={loading}>
           {loading ? <Loader2 className="animate-spin" /> : null}
