@@ -23,7 +23,7 @@ export const Route = createFileRoute("/forgot-password")({
       },
     ],
   }),
-  component: ForgotPassword;
+  component: ForgotPassword,
 });
 
 function ForgotPassword() {
