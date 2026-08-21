@@ -23,7 +23,7 @@ export const Route = createFileRoute("/forgot-password")({
       },
     ],
   }),
-  component: ForgotPassword;
+  component: ForgotPassword,
 });
 
 function ForgotPassword() {
@@ -46,7 +46,7 @@ function ForgotPassword() {
     e.preventDefault();
     const parsed = phoneField.safeParse(phone);
     if (!parsed.success) {
-      setErrors({ phone: parsed.error.issues[0].message });
+      setErrors({ phone: parsed.error.issues[0]!.message });
       return;
     }
     setErrors({});
@@ -101,7 +101,7 @@ function ForgotPassword() {
             autoComplete="tel"
             maxLength={10}
             value={phone}
-            error={errors.phone}
+            error={errors["phone"]}
             disabled={loading}
             onChange={(e) => {
               setPhone(e.target.value.replace(/\D/g, ""));
@@ -110,7 +110,7 @@ function ForgotPassword() {
             placeholder="98765 43210"
           />
 
-          <FormError message={errors.form} />
+          <FormError message={errors["form"]} />
 
           <Button type="submit" size="xl" className="w-full" disabled={loading}>
             {loading ? <Loader2 className="animate-spin" /> : null}
@@ -129,7 +129,7 @@ function ForgotPassword() {
             type="password"
             autoComplete="new-password"
             value={password}
-            error={errors.password}
+            error={errors["password"]}
             disabled={loading}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -144,7 +144,7 @@ function ForgotPassword() {
             type="password"
             autoComplete="new-password"
             value={confirm}
-            error={errors.confirm}
+            error={errors["confirm"]}
             disabled={loading}
             onChange={(e) => {
               setConfirm(e.target.value);
@@ -153,7 +153,7 @@ function ForgotPassword() {
             placeholder="Re-enter password"
           />
 
-          <FormError message={errors.form} />
+          <FormError message={errors["form"]} />
 
           <Button type="submit" size="xl" className="w-full" disabled={loading}>
             {loading ? <Loader2 className="animate-spin" /> : null}

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 type FieldProps = React.ComponentProps<typeof Input> & {
   label: string;
   id: string;
-  error?: string;
+  error?: string | undefined;
 };
 
 export function Field({ label, id, error, className, ...props }: FieldProps) {
@@ -30,7 +30,7 @@ export function Field({ label, id, error, className, ...props }: FieldProps) {
   );
 }
 
-export function FormError({ message }: { message?: string }) {
+export function FormError({ message }: { message?: string | undefined }) {
   if (!message) return null;
   return (
     <p

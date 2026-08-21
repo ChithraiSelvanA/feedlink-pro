@@ -36,9 +36,10 @@ export const Route = createFileRoute("/settings")({
 
 function Settings() {
   const navigate = useNavigate();
-  const { logout: signOut } = useAuth();
+  const { logout: signOut, resetPassword, session } = useAuth();
   const [pwd, setPwd] = useState(false);
   const [logout, setLogout] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [next, setNext] = useState("");
 
   return (
@@ -104,9 +105,18 @@ function Settings() {
           <DialogFooter>
             <Button
               className="w-full"
-              onClick={() => {
+              disabled={saving}
+              onClick={async () => {
                 if (next.length < 6) {
                   toast.error("Password must be at least 6 characters");
+                  return;
+                }
+                if (!session) return;
+                setSaving(true);
+                const err = await resetPassword(session.phone, next);
+                setSaving(false);
+                if (err) {
+                  toast.error(err);
                   return;
                 }
                 setNext("");
@@ -114,7 +124,7 @@ function Settings() {
                 toast.success("Password updated");
               }}
             >
-              Update Password
+              {saving ? "Updating…" : "Update Password"}
             </Button>
           </DialogFooter>
         </DialogContent>
